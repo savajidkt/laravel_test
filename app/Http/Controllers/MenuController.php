@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MenuItemResource;
 use App\Models\MenuItem;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -94,6 +95,13 @@ class MenuController extends BaseController
      */
 
     public function getMenuItems() {
+        $menus = MenuItem::whereNull('parent_id')->with(['children', 'children.children'])->get();
+
+        if( $menus->count() )
+        {
+            return response()->json(MenuItemResource::collection($menus));
+        }
+
         throw new \Exception('implement in coding task 3');
     }
 }
